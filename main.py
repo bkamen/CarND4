@@ -8,3 +8,6 @@ ret, mtx, dist = calibrate_camera(folder='.\camera_cal/', nx=9, ny=6, save_resul
 
 # create examples of undistorted images
 undistort_images('.\camera_cal/', mtx, dist, nx=9, ny=6, chessboarddrawn=1)
+
+
+# TODO: fiddle on test images
