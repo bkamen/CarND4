@@ -6,6 +6,7 @@ import time
 
 
 def calibrate_camera(folder, nx, ny, save_result=1, save_log=1):
+    print('Startin camera calibration')
     # list of images that should be processed
     im_list = glob.glob(folder+'*.jpg')
 
