@@ -1,9 +1,9 @@
 from camera_calibration import calibrate_camera, undistort_images
-from image_transform import image_trafo, image_trafo_folder
+from image_transform import image_trafo_folder, persp_transform
 import cv2
 import pickle
 
-# define camera calibration file
+# define camera calibration file, if there is any already any
 cam_cal = 'camera_calibration_20170525_23h24'
 
 
@@ -20,17 +20,26 @@ else:
 # create examples of undistorted images
 #undistort_images('.\camera_cal/', mtx, dist, nx=9, ny=6, chessboarddrawn=1)
 
+thresh_r =    (200, 255)
+thresh_g =    (200, 255)
+thresh_h =    (160, 255)
+thresh_s =    (180, 255)
+thresh_sobel = (40, 200)
+
+# find points for perspective transform
+file = './test_images/straight_lines1.jpg'
+img = cv2.imread(file)
+imgout = persp_transform(img)
+# define the filename for the output
+filename = './output_images/perspective_transformed_' + file.split('/')[-1]
+# create the file
+cv2.imwrite(filename, imgout)
 
 # transform images for lane detection
-#folder = './test_images/'
-#out = image_trafo_folder(folder, mtx, dist, thresh_r=(200, 255), thresh_h=(0, 255), thresh_s=(50, 255),
-#                         thresh_sobel=(10, 255), test_saves=0, undistort=1)
+folder = './test_images/'
+image_trafo_folder(folder, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, thresh_sobel,
+                   test_saves=1, undistort=1, perspective_transform=1)
 
-file = './test_images/test1.jpg'
-img = cv2.imread(file)
-
-out = image_trafo(img, mtx, dist, thresh_r=(200, 255), thresh_g=(195, 255), thresh_h=(0, 255), thresh_s=(100, 255),
-                  thresh_sobel=(10, 255), test_saves=1, undistort=1)
-
-cv2.imwrite('test.jpg', out*255)
-
+# fit the lines and draw them in the image
+folder = './output_images/'
+fit_spline_folder(folder)
