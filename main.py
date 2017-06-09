@@ -1,5 +1,6 @@
 from camera_calibration import calibrate_camera, undistort_images
 from image_transform import image_trafo_folder, persp_transform
+from fit_lane import init_fit_line, similar_fit_line
 import cv2
 import pickle
 
@@ -41,5 +42,7 @@ image_trafo_folder(folder, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, th
                    test_saves=1, undistort=1, perspective_transform=1)
 
 # fit the lines and draw them in the image
-folder = './output_images/'
-fit_spline_folder(folder)
+img = './output_images/transformed_straight_lines1.jpg'
+img = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
+left_fit, right_fit = init_fit_line(img)
+similar_fit_line(img, left_fit, right_fit)
