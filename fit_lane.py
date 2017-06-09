@@ -142,3 +142,4 @@ def similar_fit_line(img, left_fit, right_fit):
     plt.xlim(0, 1280)
     plt.ylim(720, 0)
     plt.show()
+
