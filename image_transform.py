@@ -10,10 +10,9 @@ def image_trafo_folder(folder, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255),
 
     for i in im_list:
         img = cv2.imread(i)
-        img, r_binary, g_binary, rg_binary, s_binary, v_binary, solx_binary = image_trafo(img, mtx, dist, thresh_r,
-                                                                                          thresh_g, thresh_h, thresh_s,
-                                                                                          thresh_sobel, undistort,
-                                                                                          perspective_transform)
+        img, r_binary, g_binary, rg_binary, \
+        s_binary, v_binary, solx_binary, dst, M = image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s,
+                                                              thresh_sobel, undistort, perspective_transform)
         # define the filename for the output
         filename = './output_images/transformed_'+i.split('\\')[-1]
         # create the file
@@ -48,9 +47,6 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
     r_binary[(r >= thresh_r[0]) & (r <= thresh_r[1])] = 1
     g_binary[(g >= thresh_g[0]) & (g <= thresh_g[1])] = 1
     rg_binary[(r_binary == 1) & (g_binary == 1)] = 1
-
-    # TODO: elementwise matrix multiplication for r and g channels as well as for h and s
-
     # calculate the binary of the S channel of the HLS color space
     hls = cv2.cvtColor(dst, cv2.COLOR_BGR2HLS)
     s = hls[:, :, 2]
@@ -79,9 +75,11 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
 
     # if the user specified a perspective transform, do it
     if perspective_transform:
-        combined_binary = persp_transform(combined_binary)
+        combined_binary, M = persp_transform(combined_binary)
+    else:
+        M = 0
 
-    return combined_binary, r_binary, g_binary, rg_binary, s_binary, v_binary, solx_binary
+    return combined_binary, r_binary, g_binary, rg_binary, s_binary, v_binary, solx_binary, dst, M
 
 
 def persp_transform(img):
@@ -91,4 +89,4 @@ def persp_transform(img):
     dst = np.float32([(400, 0), (350, imshape[1]), (imshape[0]-400, 0), (imshape[0]-350, imshape[1])])
     src = np.float32([(600, 450), (180, imshape[1]), (imshape[0] - 600, 450), (imshape[0] - 180, imshape[1])])
     M = cv2.getPerspectiveTransform(src, dst)
-    return cv2.warpPerspective(img, M, imshape)
+    return cv2.warpPerspective(img, M, imshape), M
