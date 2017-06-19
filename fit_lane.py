@@ -3,12 +3,8 @@ import matplotlib.pyplot as plt
 import cv2
 
 
-def init_fit_line(img):
+def init_fit_line(img, llane, rlane):
     histogram = np.sum(img[img.shape[0]//2:, :], axis=0)
-
-    # convert loaded image to binary
-    img[img < 150] = 0
-    img[img >= 150] = 1
 
     out_img = np.dstack((img, img, img))*255
 
@@ -79,18 +75,29 @@ def init_fit_line(img):
 
     out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
     out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
-    plt.imshow(out_img)
-    plt.plot(left_fitx, ploty, color='yellow')
-    plt.plot(right_fitx, ploty, color='yellow')
-    plt.xlim(0, 1280)
-    plt.ylim(720, 0)
-    plt.show()
+    #plt.imshow(out_img)
+    #plt.plot(left_fitx, ploty, color='yellow')
+    #plt.plot(right_fitx, ploty, color='yellow')
+    #plt.xlim(0, 1280)
+    #plt.ylim(720, 0)
+    #plt.show()
 
-    return left_fit, right_fit
+    llane.detected = True
+    llane.current_fit = left_fit
+    llane.best_fit = left_fit
+    llane.recent_xfitted = leftx
+    llane.allx = leftx
+    llane.ally = lefty
+
+    rlane.detected = True
+    rlane.current_fit = right_fit
+    rlane.best_fit = right_fit
+    rlane.recent_xfitted = rightx
+    rlane.allx = rightx
+    rlane.ally = righty
 
 
-def similar_fit_line(img, left_fit, right_fit):
-    print('function similar_fit_line called')
+def similar_fit_line(img, llane, rlane):
 
     # Assume you now have a new warped binary image
     # from the next frame of video (also called "img")
@@ -99,8 +106,8 @@ def similar_fit_line(img, left_fit, right_fit):
     nonzeroy = np.array(nonzero[0])
     nonzerox = np.array(nonzero[1])
     margin = 100
-    left_lane_inds = ((nonzerox > (left_fit[0]*(nonzeroy**2) + left_fit[1]*nonzeroy + left_fit[2] - margin)) & (nonzerox < (left_fit[0]*(nonzeroy**2) + left_fit[1]*nonzeroy + left_fit[2] + margin)))
-    right_lane_inds = ((nonzerox > (right_fit[0]*(nonzeroy**2) + right_fit[1]*nonzeroy + right_fit[2] - margin)) & (nonzerox < (right_fit[0]*(nonzeroy**2) + right_fit[1]*nonzeroy + right_fit[2] + margin)))
+    left_lane_inds = ((nonzerox > (llane.current_fit[0]*(nonzeroy**2) + llane.current_fit[1]*nonzeroy + llane.current_fit[2] - margin)) & (nonzerox < (llane.current_fit[0]*(nonzeroy**2) + llane.current_fit[1]*nonzeroy + llane.current_fit[2] + margin)))
+    right_lane_inds = ((nonzerox > (rlane.current_fit[0]*(nonzeroy**2) + rlane.current_fit[1]*nonzeroy + rlane.current_fit[2] - margin)) & (nonzerox < (rlane.current_fit[0]*(nonzeroy**2) + rlane.current_fit[1]*nonzeroy + rlane.current_fit[2] + margin)))
 
     # Again, extract left and right line pixel positions
     leftx = nonzerox[left_lane_inds]
@@ -115,31 +122,82 @@ def similar_fit_line(img, left_fit, right_fit):
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
 
-    # Create an image to draw on and an image to show the selection window
-    out_img = np.dstack((img, img, img))*255
-    window_img = np.zeros_like(out_img)
-    # Color in left and right line pixels
-    out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
-    out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
+    if 0.95 * llane.current_fit <= left_fit <= 1.05 * llane.current_fit:
+        llane.detected = True
+        llane.current_fit = left_fit
+        llane.recent_xfitted = leftx
+        llane.allx = leftx
+        llane.ally = lefty
+    else:
+        llane.current_fit = llane.best_fit
 
-    # Generate a polygon to illustrate the search window area
-    # And recast the x and y points into usable format for cv2.fillPoly()
-    left_line_window1 = np.array([np.transpose(np.vstack([left_fitx-margin, ploty]))])
-    left_line_window2 = np.array([np.flipud(np.transpose(np.vstack([left_fitx+margin, ploty])))])
-    left_line_pts = np.hstack((left_line_window1, left_line_window2))
-    right_line_window1 = np.array([np.transpose(np.vstack([right_fitx-margin, ploty]))])
-    right_line_window2 = np.array([np.flipud(np.transpose(np.vstack([right_fitx+margin, ploty])))])
-    right_line_pts = np.hstack((right_line_window1, right_line_window2))
+    if 0.95 * rlane.current_fit <= right_fit <= 1.05 * rlane.current_fit:
+        rlane.detected = True
+        rlane.current_fit = right_fit
+        rlane.recent_xfitted = rightx
+        rlane.allx = rightx
+        rlane.ally = righty
+    else:
+        rlane.current_fit = rlane.best_fit
+
+
+def meas_curv(left_fit, right_fit):
+    # Generate some fake data to represent lane-line pixels
+    ploty = np.linspace(0, 719, num=720)  # to cover same y-range as image
+    quadratic_coeff = 3e-4  # arbitrary quadratic coefficient
+    # For each y position generate random x position within +/-50 pix
+    # of the line base position in each case (x=200 for left, and x=900 for right)
+    leftx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
+    rightx = right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
+
+    #leftx = leftx[::-1]  # Reverse to match top-to-bottom in y
+    #rightx = rightx[::-1]  # Reverse to match top-to-bottom in y
+
+
+    # Define y-value where we want radius of curvature
+    # I'll choose the maximum y-value, corresponding to the bottom of the image
+    y_eval = np.max(ploty)
+    left_curverad = ((1 + (2 * left_fit[0] * y_eval + left_fit[1]) ** 2) ** 1.5) / np.absolute(2 * left_fit[0])
+    right_curverad = ((1 + (2 * right_fit[0] * y_eval + right_fit[1]) ** 2) ** 1.5) / np.absolute(2 * right_fit[0])
+    #print(left_curverad, right_curverad)
+    # Example values: 1926.74 1908.48
+
+    # Define conversions in x and y from pixels space to meters
+    ym_per_pix = 30 / 720  # meters per pixel in y dimension
+    xm_per_pix = 3.7 / 700  # meters per pixel in x dimension
+
+    # Fit new polynomials to x,y in world space
+    left_fit_cr = np.polyfit(ploty * ym_per_pix, leftx * xm_per_pix, 2)
+    right_fit_cr = np.polyfit(ploty * ym_per_pix, rightx * xm_per_pix, 2)
+    # Calculate the new radii of curvature
+    left_curverad = ((1 + (2 * left_fit_cr[0] * y_eval * ym_per_pix + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
+        2 * left_fit_cr[0])
+    right_curverad = ((1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
+        2 * right_fit_cr[0])
+    # Now our radius of curvature is in meters
+    #print(left_curverad, 'm', right_curverad, 'm')
+
+    return left_curverad, right_curverad
+
+
+def draw_lane(warped, undist, llane, rlane, M):
+    warp_zero = np.zeros_like(warped).astype(np.uint8)
+    color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
+    # Recast the x and y points into usable format for cv2.fillPoly()
+    ploty = np.linspace(0, 719, num=720)  # to cover same y-range as image
+    leftx = llane.current_fit[0] * ploty ** 2 + llane.current_fit[1] * ploty + llane.current_fit[2]
+    rightx = rlane.current_fit[0] * ploty ** 2 + rlane.current_fit[1] * ploty + rlane.current_fit[2]
+    pts_left = np.array([np.transpose(np.vstack([leftx, ploty]))])
+    pts_right = np.array([np.flipud(np.transpose(np.vstack([rightx, ploty])))])
+    pts = np.hstack((pts_left, pts_right))
 
     # Draw the lane onto the warped blank image
-    cv2.fillPoly(window_img, np.int_([left_line_pts]), (0,255, 0))
-    cv2.fillPoly(window_img, np.int_([right_line_pts]), (0,255, 0))
-    result = cv2.addWeighted(out_img, 1, window_img, 0.3, 0)
-    plt.figure()
-    plt.imshow(result)
-    plt.plot(left_fitx, ploty, color='yellow')
-    plt.plot(right_fitx, ploty, color='yellow')
-    plt.xlim(0, 1280)
-    plt.ylim(720, 0)
-    plt.show()
+    cv2.fillPoly(color_warp, np.int_([pts]), (0, 255, 0))
 
+    Minv = np.linalg.inv(M)
+    # Warp the blank back to original image space using inverse perspective matrix (Minv)
+    newwarp = cv2.warpPerspective(color_warp, Minv, (undist.shape[1], undist.shape[0]))
+    # Combine the result with the original image
+    result = cv2.addWeighted(undist, 1, newwarp, 0.3, 0)
+    #plt.imshow(result)
+    return result
