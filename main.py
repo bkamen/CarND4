@@ -6,6 +6,7 @@ import pickle
 import glob
 from moviepy.editor import VideoFileClip
 from line import Line
+import numpy as np
 
 # define camera calibration file, if there is any already any
 cam_cal = 'camera_calibration_20170525_23h24'
@@ -58,10 +59,19 @@ def img_pipeline(img):
 
     if not llane.detected:
         init_fit_line(img, llane, rlane)
+        best_fit_left = llane.current_fit
+        best_fit_right = rlane.current_fit
     else:
         similar_fit_line(img, llane, rlane)
-        llane.best_fit = 0.75 * llane.best_fit + 0.25 * llane.current_fit
-        rlane.best_fit = 0.75 * rlane.best_fit + 0.25 * rlane.current_fit
+        if np.shape(best_fit_left)[0] >= 5:
+            best_fit_left = best_fit_left[1:]
+        if np.shape(best_fit_right)[0] >= 5:
+            best_fit_right = best_fit_right[1:]
+        best_fit_left = np.append(best_fit_left, llane.current_fit)
+        best_fit_right = np.append(best_fit_tight, rlane.current_fit)
+        llane.best_fit = np.mean(best_fit_left, 0)
+        rlane.best_fit = np.mean(best_fit_right, 0)
+
 
 #    leftcurv, rightcurv = meas_curv(left_fit, right_fit)
 
