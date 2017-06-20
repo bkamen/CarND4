@@ -86,8 +86,8 @@ def persp_transform(img):
     # function that performs perspective transform
     # source and destination are hardcoded and are found empirically by testing and deciding subjectively
     imshape = (img.shape[1], img.shape[0])
-    offset = -50
-    dst = np.float32([(450+offset, 0), (250+offset, imshape[1]), (imshape[0]-450+offset, 0), (imshape[0]-250+offset, imshape[1])])
+    offset = 0
+    dst = np.float32([(450+offset, 0), (200+offset, imshape[1]), (imshape[0]-450+offset, 0), (imshape[0]-200+offset, imshape[1])])
     src = np.float32([(605, 470), (180, imshape[1]), (imshape[0] - 605, 470), (imshape[0] - 180, imshape[1])])
     #src = np.float32([[490, 482], [810, 482], [1250, 720], [40, 720]])
     #dst = np.float32([[0, 0], [1280, 0], [1250, 720], [40, 720]])
