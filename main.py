@@ -35,17 +35,23 @@ thresh_sobel = (40, 200)
 folder = './test_images/'
 im_list = glob.glob(folder+'*.jpg')
 
+image_trafo_folder(folder, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, thresh_sobel, undistort=1, perspective_transform=1)
+
 for i in im_list:
     img = cv2.imread(i)
     img, _, _, _, _, _, _, undist, M = image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, thresh_sobel,
                                                    undistort=1, perspective_transform=1)
+    # left lane
+    llane = Line()
+    # right lane
+    rlane = Line()
+    init_fit_line(img, llane, rlane)
+    #leftcurv, rightcurv = meas_curv(left_fit, right_fit)
 
-    #left_fit, right_fit = init_fit_line(img)
-    #leftcurv, rightcurv = meas_curv(left_fit,right_fit)
+    img = draw_lane(img, undist, llane, rlane, M)
+    cv2.imshow('transformed image', img)
+    cv2.waitKey(1000)
 
-    #img = draw_lane(img, undist, left_fit, right_fit, M)
-    #cv2.imshow('transformed image', img)
-    #cv2.waitKey(1000)
 
 
 def img_pipeline(img):
