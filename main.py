@@ -25,17 +25,17 @@ else:
 # create examples of undistorted images
 #undistort_images('.\camera_cal/', mtx, dist, nx=9, ny=6, chessboarddrawn=1)
 
-thresh_r =    (200, 255)
-thresh_g =    (200, 255)
+thresh_r =    (210, 255)
+thresh_g =    (210, 255)
 thresh_h =    (160, 255)
-thresh_s =    (180, 255)
-thresh_sobel = (40, 200)
+thresh_s =    (200, 255)
+thresh_sobel = (30, 200)
 
 
 folder = './test_images/'
 im_list = glob.glob(folder+'*.jpg')
 
-image_trafo_folder(folder, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, thresh_sobel, undistort=1, perspective_transform=1)
+image_trafo_folder(folder, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, thresh_sobel, test_saves=1, undistort=1, perspective_transform=1)
 
 for i in im_list:
     img = cv2.imread(i)
@@ -84,6 +84,8 @@ def img_pipeline(img):
     img = draw_lane(img, undist, llane, rlane, M)
     return img
 
+print(llane.best_fit)
+print(rlane.best_fit)
 white_output = 'project_video_output.mp4'
 clip1 = VideoFileClip('project_video.mp4', audio=False)
 white_clip = clip1.fl_image(img_pipeline)
