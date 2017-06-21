@@ -28,7 +28,7 @@ def image_trafo_folder(folder, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255),
 
 
 def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=(10, 255), thresh_s=(10, 255),
-                thresh_sobel=(10, 255),  undistort=1, perspective_transform=1):
+                thresh_sobel=(10, 255),  undistort=1, perspective_transform=1, hist_equ=1):
     # function that returns a binary image which is a combination of the R channel of the BGR image, ...
     # the H and S channels of the HLS color space and color gradient in x direction (sobel x)
     # if user sets undistort flag, images will be undistorted
@@ -37,9 +37,17 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
     else:
         dst = img
 
+
+
+    clahe = cv2.createCLAHE(clipLimit=1.5, tileGridSize=(4, 4))
+
     # calculate the R channel
     r = dst[:, :, 2]
     g = dst[:, :, 1]
+    # apply histogram equalization
+    if hist_equ==1:
+        r = clahe.apply(r)
+        g = clahe.apply(g)
     # calculate R binary
     r_binary = np.zeros_like(r)
     g_binary = np.zeros_like(g)
@@ -50,13 +58,16 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
     # calculate the binary of the S channel of the HLS color space
     hls = cv2.cvtColor(dst, cv2.COLOR_BGR2HLS)
     s = hls[:, :, 2]
+    if hist_equ==1:
+        s = clahe.apply(s)
     s_binary = np.zeros_like(s)
     s_binary[(s >= thresh_s[0]) & (s <= thresh_s[1])] = 1
 
     # calculate the binary of the V channel of the HVS color space
     hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)
     v = hsv[:, :, 2]
-
+    if hist_equ==1:
+        v = clahe.apply(v)
     v_binary = np.zeros_like(v)
     v_binary[(v >= 220) & (v <= 255)] = 1
 
@@ -75,11 +86,12 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
 
     # if the user specified a perspective transform, do it
     if perspective_transform:
-        combined_binary, M = persp_transform(combined_binary)
+        warped, M = persp_transform(combined_binary)
     else:
+        warped = combined_binary
         M = 0
 
-    return combined_binary, r_binary, g_binary, rg_binary, s_binary, v_binary, solx_binary, dst, M
+    return warped, r_binary, g_binary, rg_binary, s_binary, v_binary, solx_binary, dst, M
 
 
 def persp_transform(img):
