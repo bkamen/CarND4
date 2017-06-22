@@ -25,11 +25,11 @@ else:
 # create examples of undistorted images
 #undistort_images('.\camera_cal/', mtx, dist, nx=9, ny=6, chessboarddrawn=1)
 
-thresh_r =    (210, 255)
-thresh_g =    (210, 255)
+thresh_r =    (110, 255)
+thresh_g =    (100, 255)
 thresh_h =    (160, 255)
-thresh_s =    (200, 255)
-thresh_sobel = (30, 200)
+thresh_s =    (140, 240)
+thresh_sobel = (25, 240)
 
 
 folder = './test_images/'
@@ -55,6 +55,12 @@ for i in im_list:
 
 
 def img_pipeline(img):
+    thresh_r = (110, 255)
+    thresh_g = (100, 255)
+    thresh_h = (160, 255)
+    thresh_s = (140, 240)
+    thresh_sobel = (25, 240)
+
     # undistort and transform image to birds-eye-view
     img, _, _, _, _, _, _, undist, M = image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s, thresh_sobel,
                                                    undistort=1, perspective_transform=1)
@@ -84,8 +90,7 @@ def img_pipeline(img):
     img = draw_lane(img, undist, llane, rlane, M)
     return img
 
-print(llane.best_fit)
-print(rlane.best_fit)
+
 white_output = 'project_video_output.mp4'
 clip1 = VideoFileClip('project_video.mp4', audio=False)
 white_clip = clip1.fl_image(img_pipeline)
