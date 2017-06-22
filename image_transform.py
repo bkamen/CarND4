@@ -28,7 +28,7 @@ def image_trafo_folder(folder, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255),
 
 
 def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=(10, 255), thresh_s=(10, 255),
-                thresh_sobel=(10, 255),  undistort=1, perspective_transform=1, hist_equ=1):
+                thresh_sobel=(10, 255),  undistort=1, perspective_transform=1, hist_equ=0):
     # function that returns a binary image which is a combination of the R channel of the BGR image, ...
     # the H and S channels of the HLS color space and color gradient in x direction (sobel x)
     # if user sets undistort flag, images will be undistorted
@@ -37,7 +37,7 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
     else:
         dst = img
 
-
+    dst = adjust_gamma(dst, .3)
 
     clahe = cv2.createCLAHE(clipLimit=1.5, tileGridSize=(4, 4))
 
@@ -105,3 +105,14 @@ def persp_transform(img):
     #dst = np.float32([[0, 0], [1280, 0], [1250, 720], [40, 720]])
     M = cv2.getPerspectiveTransform(src, dst)
     return cv2.warpPerspective(img, M, imshape), M
+
+
+def adjust_gamma(image, gamma=1.0):
+    # build a lookup table mapping the pixel values [0, 255] to
+    # their adjusted gamma values
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+                      for i in np.arange(0, 256)]).astype("uint8")
+
+    # apply gamma correction using the lookup table
+    return cv2.LUT(image, table)
