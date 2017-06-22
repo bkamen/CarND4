@@ -129,6 +129,7 @@ def similar_fit_line(img, llane, rlane):
         llane.allx = leftx
         llane.ally = lefty
     else:
+        print('different')
         llane.current_fit = llane.best_fit
 
     if 0.95 * rlane.current_fit <= right_fit <= 1.05 * rlane.current_fit:
@@ -138,6 +139,7 @@ def similar_fit_line(img, llane, rlane):
         rlane.allx = rightx
         rlane.ally = righty
     else:
+        print('different')
         rlane.current_fit = rlane.best_fit
 
 
