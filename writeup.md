@@ -67,21 +67,21 @@ To not run into the issue to also have a yellowish tarmac included an elementwis
 
 R and G binaries:
 
-![R binary](./output_images/r_binary_straight_lines1.jpg)![R binary](./output_images/r_binary_straight_lines2.jpg) ![R binary](./output_images/r_binary_test1.jpg) ![R binary](./output_images/r_binary_test2.jpg) ![R binary](r_binary_test3.jpg) ![R binary](./output_images/r_binary_test4.jpg) ![R binary](./output_images/r_binary_test5.jpg) ![R binary](./output_images/r_binary_test6.jpg)
-![G binary](./output_images/g_binary_straight_lines1.jpg) ![G binary](./output_images/g_binary_straight_lines2.jpg) ![G binary](./output_images/g_binary_test1.jpg) ![G binary](./output_images/g_binary_test2.jpg) ![G binary](g_binary_test3.jpg) ![G binary](./output_images/g_binary_test4.jpg) ![G binary](./output_images/g_binary_test5.jpg) ![G binary](./output_images/g_binary_test6.jpg)
+![R binary](./output_images/r_binary_straight_lines1.jpg)![R binary](./output_images/r_binary_straight_lines2.jpg)![R binary](./output_images/r_binary_test1.jpg)![R binary](./output_images/r_binary_test2.jpg)![R binary](r_binary_test3.jpg)![R binary](./output_images/r_binary_test4.jpg)![R binary](./output_images/r_binary_test5.jpg)![R binary](./output_images/r_binary_test6.jpg)
+![G binary](./output_images/g_binary_straight_lines1.jpg)![G binary](./output_images/g_binary_straight_lines2.jpg)![G binary](./output_images/g_binary_test1.jpg)![G binary](./output_images/g_binary_test2.jpg)![G binary](g_binary_test3.jpg)![G binary](./output_images/g_binary_test4.jpg)![G binary](./output_images/g_binary_test5.jpg)![G binary](./output_images/g_binary_test6.jpg)
 
 Combined R and G binaries:
-![RG binary](./output_images/rg_binary_straight_lines1.jpg) ![RG binary](./output_images/rg_binary_straight_lines2.jpg) ![RG binary](./output_images/rg_binary_test1.jpg) ![RG binary](./output_images/rg_binary_test2.jpg) ![RG binary](./output_images/rg_binary_test3.jpg) ![RG binary](./output_images/rg_binary_test4.jpg) ![RG binary](./output_images/rg_binary_test5.jpg) ![RG binary](./output_images/rg_binary_test6.jpg)
+![RG binary](./output_images/rg_binary_straight_lines1.jpg)![RG binary](./output_images/rg_binary_straight_lines2.jpg)![RG binary](./output_images/rg_binary_test1.jpg)![RG binary](./output_images/rg_binary_test2.jpg)![RG binary](./output_images/rg_binary_test3.jpg)![RG binary](./output_images/rg_binary_test4.jpg)![RG binary](./output_images/rg_binary_test5.jpg)![RG binary](./output_images/rg_binary_test6.jpg)
 
 
 Of the HLS color space the S channel is used ('image_transform.py', line 55-59):
-![S binary](./output_images/s_binary_straight_lines1.jpg) ![S binary](./output_images/s_binary_straight_lines2.jpg) ![S binary](./output_images/s_binary_test1.jpg) ![S binary](./output_images/s_binary_test2.jpg) ![S binary](s_binary_test3.jpg) ![S binary](./output_images/s_binary_test4.jpg) ![S binary](./output_images/s_binary_test5.jpg) ![S binary](./output_images/s_binary_test6.jpg)
+![S binary](./output_images/s_binary_straight_lines1.jpg)![S binary](./output_images/s_binary_straight_lines2.jpg)![S binary](./output_images/s_binary_test1.jpg)![S binary](./output_images/s_binary_test2.jpg)![S binary](s_binary_test3.jpg)![S binary](./output_images/s_binary_test4.jpg)![S binary](./output_images/s_binary_test5.jpg)![S binary](./output_images/s_binary_test6.jpg)
 
 Of the HSV color space the V channel is used ('image_transform.py', line 61-65):
-![V binary](./output_images/v_binary_straight_lines1.jpg) ![V binary](./output_images/v_binary_straight_lines2.jpg) ![V binary](./output_images/v_binary_test1.jpg) ![V binary](./output_images/v_binary_test2.jpg) ![V binary](v_binary_test3.jpg) ![V binary](./output_images/v_binary_test4.jpg) ![V binary](./output_images/v_binary_test5.jpg) ![V binary](./output_images/v_binary_test6.jpg)
+![V binary](./output_images/v_binary_straight_lines1.jpg)![V binary](./output_images/v_binary_straight_lines2.jpg)![V binary](./output_images/v_binary_test1.jpg)![V binary](./output_images/v_binary_test2.jpg)![V binary](v_binary_test3.jpg)![V binary](./output_images/v_binary_test4.jpg)![V binary](./output_images/v_binary_test5.jpg)![V binary](./output_images/v_binary_test6.jpg)
 
 And last but not least a binary of the sobel gradient in the x-direction of a grayscale image is used ('image_transform.py', line 67-74):
-![Sobelx binary](./output_images/solx_binary_straight_lines1.jpg) ![Sobelx binary](./output_images/solx_binary_straight_lines2.jpg) ![Sobelx binary](./output_images/solx_binary_test1.jpg) ![Sobelx binary](./output_images/solx_binary_test2.jpg) ![Sobelx binary](./output_images/solx_binary_test3.jpg) ![Sobelx binary](./output_images/solx_binary_test4.jpg) ![Sobelx binary](./output_images/solx_binary_test5.jpg) ![Sobelx binary](./output_images/solx_binary_test6.jpg)
+![Sobelx binary](./output_images/solx_binary_straight_lines1.jpg)![Sobelx binary](./output_images/solx_binary_straight_lines2.jpg)![Sobelx binary](./output_images/solx_binary_test1.jpg)![Sobelx binary](./output_images/solx_binary_test2.jpg)![Sobelx binary](./output_images/solx_binary_test3.jpg)![Sobelx binary](./output_images/solx_binary_test4.jpg)![Sobelx binary](./output_images/solx_binary_test5.jpg)![Sobelx binary](./output_images/solx_binary_test6.jpg)
 
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
