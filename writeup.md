@@ -42,11 +42,11 @@ The image points are the identified corners of the chessboards and are appended 
 To get the calibration coefficients the opencv function cv2.calibrateCamera is called ('camera_calibration.py', line 40) which calculates the coeffs based on the objpts and imgpts array.
 If defined by the user the coefficients will be saved as pickle file. Same goes for the logfile which is saved as textfile.
 
-![Original image](./camera_calibration/calibration1.jpg) ![undistorted image](./output_images/undistorted_calibration1.jpg)
-![Original image](./camera_calibration/calibration2.jpg) ![undistorted image](./output_images/undistorted_calibration2.jpg)
-![Original image](./camera_calibration/calibration3.jpg) ![undistorted image](./output_images/undistorted_calibration3.jpg)
-![Original image](./camera_calibration/calibration4.jpg) ![undistorted image](./output_images/undistorted_calibration4.jpg)
-![Original image](./camera_calibration/calibration5.jpg) ![undistorted image](./output_images/undistorted_calibration5.jpg)
+![Original image](./camera_cal/calibration1.jpg) ![undistorted image](./output_images/undistorted_calibration1.jpg)
+![Original image](./camera_cal/calibration2.jpg) ![undistorted image](./output_images/undistorted_calibration2.jpg)
+![Original image](./camera_cal/calibration3.jpg) ![undistorted image](./output_images/undistorted_calibration3.jpg)
+![Original image](./camera_cal/calibration4.jpg) ![undistorted image](./output_images/undistorted_calibration4.jpg)
+![Original image](./camera_cal/calibration5.jpg) ![undistorted image](./output_images/undistorted_calibration5.jpg)
 
 ### Pipeline (single images)
 
