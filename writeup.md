@@ -71,7 +71,7 @@ R and G binaries:
 ![G binary](./output_images/g_binary_straight_lines1.jpg) ![G binary](./output_images/g_binary_straight_lines2.jpg) ![G binary](./output_images/g_binary_test1.jpg) ![G binary](./output_images/g_binary_test2.jpg) ![G binary](g_binary_test3.jpg) ![G binary](./output_images/g_binary_test4.jpg) ![G binary](./output_images/g_binary_test5.jpg) ![G binary](./output_images/g_binary_test6.jpg)
 
 Combined R and G binaries:
-![RG binary](./output_images/rg_binary_straight_lines1.jpg) ![RG binary](./output_images/rg_binary_straight_lines2.jpg) ![RG binary](./output_images/rg_binary_test1.jpg) ![RG binary](./output_images/rg_binary_test2.jpg) ![RG binary](rg_binary_test3.jpg) ![RG binary](./output_images/rg_binary_test4.jpg) ![RG binary](./output_images/rg_binary_test5.jpg) ![RG binary](./output_images/rg_binary_test6.jpg)
+![RG binary](./output_images/rg_binary_straight_lines1.jpg) ![RG binary](./output_images/rg_binary_straight_lines2.jpg) ![RG binary](./output_images/rg_binary_test1.jpg) ![RG binary](./output_images/rg_binary_test2.jpg) ![RG binary](./output_images/rg_binary_test3.jpg) ![RG binary](./output_images/rg_binary_test4.jpg) ![RG binary](./output_images/rg_binary_test5.jpg) ![RG binary](./output_images/rg_binary_test6.jpg)
 
 
 Of the HLS color space the S channel is used ('image_transform.py', line 55-59):
