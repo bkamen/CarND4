@@ -55,10 +55,33 @@ If defined by the user the coefficients will be saved as pickle file. Same goes 
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
 
 Original and undistored example:
-![][image12] ![][image11]
+![Undistorted example](./output_images/undistorted_straight_lines1.jpg)
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
+The method used consists of using single channels of 3 color spaces plus the sobel gradient calculation in x direction.
+A combination of the used for the output image.
+
+Of the BGR color space the R and G channels are used. Lane lines always have R components as well as G components (usually white or yellow lines).
+To not run into the issue to also have a yellowish tarmac included an elementwise matrix multiplication of R and G channel is performed to only catch pixels that have both components ('image_transform.py', line 47-54).
+
+R and G binaries:
+
+![R binary](r_binary_straight_lines1.jpg) ![R binary](r_binary_straight_lines2.jpg) ![R binary](r_binary_test1.jpg) ![R binary](r_binary_test2.jpg) ![R binary](r_binary_test3.jpg) ![R binary](r_binary_test4.jpg) ![R binary](r_binary_test5.jpg) ![R binary](r_binary_test6.jpg)
+![G binary](g_binary_straight_lines1.jpg) ![G binary](g_binary_straight_lines2.jpg) ![G binary](g_binary_test1.jpg) ![G binary](g_binary_test2.jpg) ![G binary](g_binary_test3.jpg) ![G binary](g_binary_test4.jpg) ![G binary](g_binary_test5.jpg) ![G binary](g_binary_test6.jpg)
+
+Combined R and G binaries:
+![RG binary](rg_binary_straight_lines1.jpg) ![RG binary](rg_binary_straight_lines2.jpg) ![RG binary](rg_binary_test1.jpg) ![RG binary](rg_binary_test2.jpg) ![RG binary](rg_binary_test3.jpg) ![RG binary](rg_binary_test4.jpg) ![RG binary](rg_binary_test5.jpg) ![RG binary](rg_binary_test6.jpg)
+
+
+Of the HLS color space the S channel is used ('image_transform.py', line 55-59):
+![S binary](s_binary_straight_lines1.jpg) ![S binary](s_binary_straight_lines2.jpg) ![S binary](s_binary_test1.jpg) ![S binary](s_binary_test2.jpg) ![S binary](s_binary_test3.jpg) ![S binary](s_binary_test4.jpg) ![S binary](s_binary_test5.jpg) ![S binary](s_binary_test6.jpg)
+
+Of the HSV color space the V channel is used ('image_transform.py', line 61-65):
+![V binary](v_binary_straight_lines1.jpg) ![V binary](v_binary_straight_lines2.jpg) ![V binary](v_binary_test1.jpg) ![V binary](v_binary_test2.jpg) ![V binary](v_binary_test3.jpg) ![V binary](v_binary_test4.jpg) ![V binary](v_binary_test5.jpg) ![V binary](v_binary_test6.jpg)
+
+And last but not least a binary of the sobel gradient in the x-direction of a grayscale image is used ('image_transform.py', line 67-74):
+![Sobelx binary](solx_binary_straight_lines1.jpg) ![Sobelx binary](solx_binary_straight_lines2.jpg) ![Sobelx binary](solx_binary_test1.jpg) ![Sobelx binary](solx_binary_test2.jpg) ![Sobelx binary](solx_binary_test3.jpg) ![Sobelx binary](solx_binary_test4.jpg) ![Sobelx binary](solx_binary_test5.jpg) ![Sobelx binary](solx_binary_test6.jpg)
 
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
