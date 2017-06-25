@@ -57,7 +57,7 @@ The image points are the identified corners of the chessboards and are appended 
 To get the calibration coefficients the opencv function cv2.calibrateCamera is called ('camera_calibration.py', line 40) which calculates the coeffs based on the objpts and imgpts array.
 If defined by the user the coefficients will be saved as pickle file. Same goes for the logfile which is saved as textfile.
 
-![Original image][image6]{ width=50% } ![undistorted image][image1]{ width=50% }
+<img src="./output_images/undistorted_calibration1.jpg" alt="Undistored" style="width: 200px;"/> ![undistorted image][image1]{ width=50% }
 ![Original image][image7] ![undistorted image][image2]
 ![Original image][image8] ![undistorted image][image3]
 ![Original image][image9] ![undistorted image][image4]
