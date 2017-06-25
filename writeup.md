@@ -67,7 +67,7 @@ To not run into the issue to also have a yellowish tarmac included an elementwis
 
 R and G binaries:
 
-![R binary](./output_images/r_binary_straight_lines1.jpg) ![R binary](./output_images/r_binary_straight_lines2.jpg) ![R binary](./output_images/r_binary_test1.jpg) ![R binary](./output_images/r_binary_test2.jpg) ![R binary](r_binary_test3.jpg) ![R binary](./output_images/r_binary_test4.jpg) ![R binary](./output_images/r_binary_test5.jpg) ![R binary](./output_images/r_binary_test6.jpg)
+![R binary](./output_images/r_binary_straight_lines1.jpg)![R binary](./output_images/r_binary_straight_lines2.jpg) ![R binary](./output_images/r_binary_test1.jpg) ![R binary](./output_images/r_binary_test2.jpg) ![R binary](r_binary_test3.jpg) ![R binary](./output_images/r_binary_test4.jpg) ![R binary](./output_images/r_binary_test5.jpg) ![R binary](./output_images/r_binary_test6.jpg)
 ![G binary](./output_images/g_binary_straight_lines1.jpg) ![G binary](./output_images/g_binary_straight_lines2.jpg) ![G binary](./output_images/g_binary_test1.jpg) ![G binary](./output_images/g_binary_test2.jpg) ![G binary](g_binary_test3.jpg) ![G binary](./output_images/g_binary_test4.jpg) ![G binary](./output_images/g_binary_test5.jpg) ![G binary](./output_images/g_binary_test6.jpg)
 
 Combined R and G binaries:
