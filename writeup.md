@@ -17,21 +17,6 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./output_images/undistorted_calibration1.jpg "Undistorted 1"
-[image2]: ./output_images/undistorted_calibration2.jpg "Undistorted 2"
-[image3]: ./output_images/undistorted_calibration3.jpg "Undistorted 3"
-[image4]: ./output_images/undistorted_calibration4.jpg "Undistorted 4"
-[image5]: ./output_images/undistorted_calibration5.jpg "Undistorted 5"
-
-[image6]: ./camera_cal/calibration1.jpg "Original 1"
-[image7]: ./camera_cal/calibration2.jpg "Original 2"
-[image8]: ./camera_cal/calibration3.jpg "Original 3"
-[image9]: ./camera_cal/calibration4.jpg "Original 4"
-[image10]: ./camera_cal/calibration5.jpg "Original 5"
-
-[image11]: ./output_images/undistorted_straight_lines1.jpg "undistored"
-[image12]: ./test_images/straight_lines1.jpg "undistored"
-
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -57,11 +42,11 @@ The image points are the identified corners of the chessboards and are appended 
 To get the calibration coefficients the opencv function cv2.calibrateCamera is called ('camera_calibration.py', line 40) which calculates the coeffs based on the objpts and imgpts array.
 If defined by the user the coefficients will be saved as pickle file. Same goes for the logfile which is saved as textfile.
 
-![Original image][./camera_calibration/calibration1.jpg =250x]
-![Original image][image7] ![undistorted image][image2]
-![Original image][image8] ![undistorted image][image3]
-![Original image][image9] ![undistorted image][image4]
-![Original image][image10] ![undistorted image][image5]
+![Original image][./camera_calibration/calibration1.jpg]![undistorted image][./output_images/undistorted_calibration1.jpg]
+![Original image][./camera_calibration/calibration2.jpg]![undistorted image][./output_images/undistorted_calibration2.jpg]
+![Original image][./camera_calibration/calibration3.jpg]![undistorted image][./output_images/undistorted_calibration3.jpg]
+![Original image][./camera_calibration/calibration4.jpg]![undistorted image][./output_images/undistorted_calibration4.jpg]
+![Original image][./camera_calibration/calibration5.jpg]![undistorted image][./output_images/undistorted_calibration5.jpg]
 
 ### Pipeline (single images)
 
