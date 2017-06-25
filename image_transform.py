@@ -92,7 +92,7 @@ def persp_transform(img):
     # source and destination are hardcoded and are found empirically by testing and deciding subjectively
     imshape = (img.shape[1], img.shape[0])
     offset = -30
-    dst = np.float32([(475+offset, 100), (200+offset, imshape[1]-100), (imshape[0]-475+offset, 100), (imshape[0]-200+offset, imshape[1]-100)])
+    dst = np.float32([(475+offset, 100), (200+offset, imshape[1]), (imshape[0]-475+offset, 100), (imshape[0]-200+offset, imshape[1])])
     src = np.float32([(610, 470), (180, imshape[1]), (imshape[0] - 610, 470), (imshape[0] - 180, imshape[1])])
     M = cv2.getPerspectiveTransform(src, dst)
     return cv2.warpPerspective(img, M, imshape), M
