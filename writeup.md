@@ -146,7 +146,7 @@ The function in the file 'fit_lane.py' named 'draw_lane', lines 187-231, draws t
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-[](./project_video.mp4)
+![](./project_video.mp4)
 
 ---
 
