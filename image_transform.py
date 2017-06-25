@@ -3,7 +3,7 @@ import cv2
 import glob
 
 
-def image_trafo_folder(folder, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=(10, 255), thresh_s=(10, 255),
+def image_trafo_folder(folder, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_s=(10, 255),
                        thresh_sobel=(10, 255), test_saves=0,  undistort=1, perspective_transform=1):
     # list of images that should be processed
     im_list = glob.glob(folder+'*.jpg')
@@ -11,24 +11,25 @@ def image_trafo_folder(folder, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255),
     for i in im_list:
         img = cv2.imread(i)
         img, r_binary, g_binary, rg_binary, \
-        s_binary, v_binary, solx_binary, dst, M = image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_h, thresh_s,
+        s_binary, v_binary, solx_binary, dst, M = image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_s,
                                                               thresh_sobel, undistort, perspective_transform)
         # define the filename for the output
         filename = './output_images/transformed_'+i.split('\\')[-1]
         # create the file
-        cv2.imwrite(filename, img*255)
+        cv2.imwrite(filename, cv2.resize(img*255, (0, 0), fx=.3, fy=.3))
 
+        # if specified save the different channels of the test images seperately
         if test_saves:
-            cv2.imwrite('./output_images/r_binary_'+i.split('\\')[-1], r_binary * 255)
-            cv2.imwrite('./output_images/g_binary_'+i.split('\\')[-1], g_binary * 255)
-            cv2.imwrite('./output_images/s_binary_'+i.split('\\')[-1], s_binary * 255)
-            cv2.imwrite('./output_images/rg_binary_'+i.split('\\')[-1], rg_binary * 255)
-            cv2.imwrite('./output_images/solx_binary_'+i.split('\\')[-1], solx_binary * 255)
-            cv2.imwrite('./output_images/v_binary_'+i.split('\\')[-1], v_binary * 255)
+            cv2.imwrite('./output_images/r_binary_'+i.split('\\')[-1], cv2.resize(r_binary * 255, (0, 0), fx=.3, fy=.3))
+            cv2.imwrite('./output_images/g_binary_'+i.split('\\')[-1], cv2.resize(g_binary * 255, (0, 0), fx=.3, fy=.3))
+            cv2.imwrite('./output_images/s_binary_'+i.split('\\')[-1], cv2.resize(s_binary * 255, (0, 0), fx=.3, fy=.3))
+            cv2.imwrite('./output_images/rg_binary_'+i.split('\\')[-1], cv2.resize(rg_binary * 255, (0, 0), fx=.3, fy=.3))
+            cv2.imwrite('./output_images/solx_binary_'+i.split('\\')[-1], cv2.resize(solx_binary * 255, (0, 0), fx=.3, fy=.3))
+            cv2.imwrite('./output_images/v_binary_'+i.split('\\')[-1], cv2.resize(v_binary * 255, (0, 0), fx=.3, fy=.3))
 
 
-def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=(10, 255), thresh_s=(10, 255),
-                thresh_sobel=(10, 255),  undistort=1, perspective_transform=1, hist_equ=0):
+def image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_s,
+                thresh_sobel,  undistort=1, perspective_transform=1):
     # function that returns a binary image which is a combination of the R channel of the BGR image, ...
     # the H and S channels of the HLS color space and color gradient in x direction (sobel x)
     # if user sets undistort flag, images will be undistorted
@@ -37,37 +38,29 @@ def image_trafo(img, mtx, dist, thresh_r=(10, 255), thresh_g=(10,255), thresh_h=
     else:
         dst = img
 
+    # adjust the gamma level, so the yellow and white parts of the image stand out more
     dst = adjust_gamma(dst, .3)
-
-    clahe = cv2.createCLAHE(clipLimit=1.5, tileGridSize=(4, 4))
 
     # calculate the R channel
     r = dst[:, :, 2]
     g = dst[:, :, 1]
-    # apply histogram equalization
-    if hist_equ==1:
-        r = clahe.apply(r)
-        g = clahe.apply(g)
-    # calculate R binary
+    # calculate R and G binary
     r_binary = np.zeros_like(r)
     g_binary = np.zeros_like(g)
     rg_binary = np.zeros_like(r)
     r_binary[(r >= thresh_r[0]) & (r <= thresh_r[1])] = 1
     g_binary[(g >= thresh_g[0]) & (g <= thresh_g[1])] = 1
+    # calculate the combined R and G binary, only true if R and G are in the limits
     rg_binary[(r_binary == 1) & (g_binary == 1)] = 1
     # calculate the binary of the S channel of the HLS color space
     hls = cv2.cvtColor(dst, cv2.COLOR_BGR2HLS)
     s = hls[:, :, 2]
-    if hist_equ==1:
-        s = clahe.apply(s)
     s_binary = np.zeros_like(s)
     s_binary[(s >= thresh_s[0]) & (s <= thresh_s[1])] = 1
 
     # calculate the binary of the V channel of the HVS color space
     hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)
     v = hsv[:, :, 2]
-    if hist_equ==1:
-        v = clahe.apply(v)
     v_binary = np.zeros_like(v)
     v_binary[(v >= 220) & (v <= 255)] = 1
 
@@ -99,10 +92,8 @@ def persp_transform(img):
     # source and destination are hardcoded and are found empirically by testing and deciding subjectively
     imshape = (img.shape[1], img.shape[0])
     offset = -100
-    dst = np.float32([(450+offset, 0), (200+offset, imshape[1]), (imshape[0]-450+offset, 0), (imshape[0]-200+offset, imshape[1])])
+    dst = np.float32([(475+offset, 100), (200+offset, imshape[1]-100), (imshape[0]-475+offset, 100), (imshape[0]-200+offset, imshape[1]-100)])
     src = np.float32([(605, 470), (180, imshape[1]), (imshape[0] - 605, 470), (imshape[0] - 180, imshape[1])])
-    #src = np.float32([[490, 482], [810, 482], [1250, 720], [40, 720]])
-    #dst = np.float32([[0, 0], [1280, 0], [1250, 720], [40, 720]])
     M = cv2.getPerspectiveTransform(src, dst)
     return cv2.warpPerspective(img, M, imshape), M
 

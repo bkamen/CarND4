@@ -24,3 +24,5 @@ class Line():
         self.allx = None
         # y values for detected line pixels
         self.ally = None
+        # all fits over the last n iterations
+        self.fits = np.array([[]])

@@ -62,6 +62,8 @@ Original and undistored example:
 The method used consists of using single channels of 3 color spaces plus the sobel gradient calculation in x direction.
 A combination of the used for the output image.
 
+The images are first undistorted. Then a gamma correction if 0.3 is done to have more seperation of the lines and the tarmac.
+
 Of the BGR color space the R and G channels are used. Lane lines always have R components as well as G components (usually white or yellow lines).
 To not run into the issue to also have a yellowish tarmac included an elementwise matrix multiplication of R and G channel is performed to only catch pixels that have both components ('image_transform.py', line 47-54).
 
@@ -93,8 +95,6 @@ And last but not least a binary of the sobel gradient in the x-direction of a gr
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
 The perspective transformation is done if defined by the user when the function 'image_trafo' is called ('image_transformation.py', line 80-85). If that is the case the function 'persp_transform' is called ('image_transformation.py', line 90-98).
 Under the assumption that the camera position is constant the following source and destination points are hardcoded:
  
@@ -112,27 +112,41 @@ The image and perspective transformed output looks like this:
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+There two different methods to identify the lane lines in the file 'fit_lane.py'. For the first fit the function 'init_fit_line' (line 6-99) is used.
+Once the line was fitted once the function 'similar_fit_line' is called (line 102-156).
 
-![alt text][image5]
+The initial line fit slices the image horizontically. Additionally every slice is divided to left and right. Then a histogram is calculated. The peak of the histogram indicates the lane line for the current window and side.
+Once you have the peak of each window an second order polynomial can be fitted to the peaks and y position of the windows.
+
+The similar fit function takes the current fit of the lane lines and looks for pixels around the current fit +/- a margin (fit_lane.py, line 109-116). Then a second-order polynomial is fitted through the found pixels.
+Additionally there is filter implemented which only allows the newly found coefficients have a certain deviation from the last fit. If this is exceeded the average fit of the last 5 frames is used.
+
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+The function to calculate the current curvature of the lane line is in 'fit_lane.py' and is called 'meas_curv', line 158-184.
+A second-order polynomial is fitted through scaled x,y-values to represent meters instead of pixels. The coefficients of the fit are then used to calculate the curvature in meters.
+
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+The function in the file 'fit_lane.py' named 'draw_lane', lines 187-231, draws the area.
 
-![alt text][image6]
-
+![](./output_images/lanes_drawn_straight_lines1.jpg)
+![](./output_images/lanes_drawn_straight_lines2.jpg)
+![](./output_images/lanes_drawn_test1.jpg)
+![](./output_images/lanes_drawn_test2.jpg)
+![](./output_images/lanes_drawn_test3.jpg)
+![](./output_images/lanes_drawn_test4.jpg)
+![](./output_images/lanes_drawn_test5.jpg)
+![](./output_images/lanes_drawn_test6.jpg)
 ---
 
 ### Pipeline (video)
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+[](./project_video.mp4)
 
 ---
 
@@ -140,4 +154,5 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+The biggest issue are changes in ambient light or when the tarmac becomes very light. Those are the use cases the pipeline is most likely to fail.
+It was tried to overcome that issue with the gamma correction. A histogram normalization could be tried as a step further.

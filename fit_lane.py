@@ -88,6 +88,7 @@ def init_fit_line(img, llane, rlane):
     llane.recent_xfitted = leftx
     llane.allx = leftx
     llane.ally = lefty
+    llane.fits = np.expand_dims(left_fit, axis=0)
 
     rlane.detected = True
     rlane.current_fit = right_fit
@@ -95,13 +96,12 @@ def init_fit_line(img, llane, rlane):
     rlane.recent_xfitted = rightx
     rlane.allx = rightx
     rlane.ally = righty
+    rlane.fits = np.expand_dims(right_fit, axis=0)
 
 
 def similar_fit_line(img, llane, rlane):
-
     # Assume you now have a new warped binary image
     # from the next frame of video (also called "img")
-    # It's now much easier to find line pixels!
     nonzero = img.nonzero()
     nonzeroy = np.array(nonzero[0])
     nonzerox = np.array(nonzero[1])
@@ -122,47 +122,50 @@ def similar_fit_line(img, llane, rlane):
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
 
-    if 0.95 * llane.current_fit <= left_fit <= 1.05 * llane.current_fit:
+    if 0.85 * llane.current_fit[0] <= left_fit[0] <= 1.15 * llane.current_fit[0] or\
+        0.85 * llane.current_fit[1] <= left_fit[1] <= 1.15 * llane.current_fit[1] or \
+            0.95 * llane.current_fit[2] <= left_fit[2] <= 1.05 * llane.current_fit[2]:
         llane.detected = True
         llane.current_fit = left_fit
-        llane.recent_xfitted = leftx
+        llane.recent_xfitted = left_fitx
         llane.allx = leftx
         llane.ally = lefty
+        if np.shape(llane.fits)[0] > 5:
+            llane.fits = np.append(llane.fits[1:], [left_fit], axis=0)
+        else:
+            llane.fits = np.append(llane.fits, [left_fit], axis=0)
+        llane.best_fit = np.mean(llane.fits, 0)
     else:
-        print('different')
         llane.current_fit = llane.best_fit
 
-    if 0.95 * rlane.current_fit <= right_fit <= 1.05 * rlane.current_fit:
+    if 0.85 * rlane.current_fit[0] <= right_fit[0] <= 1.15 * rlane.current_fit[0] or \
+        0.85 * rlane.current_fit[1] <= right_fit[1] <= 1.15 * rlane.current_fit[1] or \
+            0.95 * rlane.current_fit[2] <= right_fit[2] <= 1.05 * rlane.current_fit[2]:
         rlane.detected = True
         rlane.current_fit = right_fit
-        rlane.recent_xfitted = rightx
+        rlane.recent_xfitted = right_fitx
         rlane.allx = rightx
         rlane.ally = righty
+        if np.shape(rlane.fits)[0] > 5:
+            rlane.fits = np.append(rlane.fits[1:], [right_fit], axis=0)
+        else:
+            rlane.fits = np.append(rlane.fits, [right_fit], axis=0)
+        rlane.best_fit = np.mean(rlane.fits, 0)
     else:
-        print('different')
         rlane.current_fit = rlane.best_fit
 
 
-def meas_curv(left_fit, right_fit):
+def meas_curv(llane, rlane):
     # Generate some fake data to represent lane-line pixels
     ploty = np.linspace(0, 719, num=720)  # to cover same y-range as image
-    quadratic_coeff = 3e-4  # arbitrary quadratic coefficient
     # For each y position generate random x position within +/-50 pix
     # of the line base position in each case (x=200 for left, and x=900 for right)
-    leftx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
-    rightx = right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
-
-    #leftx = leftx[::-1]  # Reverse to match top-to-bottom in y
-    #rightx = rightx[::-1]  # Reverse to match top-to-bottom in y
-
+    leftx = llane.best_fit[0] * ploty ** 2 + llane.best_fit[1] * ploty + llane.best_fit[2]
+    rightx = rlane.best_fit[0] * ploty ** 2 + rlane.best_fit[1] * ploty + rlane.best_fit[2]
 
     # Define y-value where we want radius of curvature
     # I'll choose the maximum y-value, corresponding to the bottom of the image
     y_eval = np.max(ploty)
-    left_curverad = ((1 + (2 * left_fit[0] * y_eval + left_fit[1]) ** 2) ** 1.5) / np.absolute(2 * left_fit[0])
-    right_curverad = ((1 + (2 * right_fit[0] * y_eval + right_fit[1]) ** 2) ** 1.5) / np.absolute(2 * right_fit[0])
-    #print(left_curverad, right_curverad)
-    # Example values: 1926.74 1908.48
 
     # Define conversions in x and y from pixels space to meters
     ym_per_pix = 30 / 720  # meters per pixel in y dimension
@@ -176,10 +179,9 @@ def meas_curv(left_fit, right_fit):
         2 * left_fit_cr[0])
     right_curverad = ((1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
         2 * right_fit_cr[0])
-    # Now our radius of curvature is in meters
-    #print(left_curverad, 'm', right_curverad, 'm')
 
-    return left_curverad, right_curverad
+    llane.radius_of_curvature = left_curverad
+    rlane.radius_of_curvature = right_curverad
 
 
 def draw_lane(warped, undist, llane, rlane, M):
@@ -196,10 +198,16 @@ def draw_lane(warped, undist, llane, rlane, M):
     # Draw the lane onto the warped blank image
     cv2.fillPoly(color_warp, np.int_([pts]), (0, 255, 0))
 
+    # calculate inverse transformation matrix
     Minv = np.linalg.inv(M)
     # Warp the blank back to original image space using inverse perspective matrix (Minv)
     newwarp = cv2.warpPerspective(color_warp, Minv, (undist.shape[1], undist.shape[0]))
     # Combine the result with the original image
     result = cv2.addWeighted(undist, 1, newwarp, 0.3, 0)
-    #plt.imshow(result)
+    # write the curvature of both lanes
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    strleft = 'Radius of left lane [m]: ' + str(llane.radius_of_curvature)
+    strright = 'Radius of right lane [m]: ' + str(rlane.radius_of_curvature)
+    cv2.putText(result, strleft, (50, 100), font, 2, (255, 255, 255))
+    cv2.putText(result, strright, (50, 200), font, 2, (255, 255, 255))
     return result
