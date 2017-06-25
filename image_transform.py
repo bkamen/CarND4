@@ -39,11 +39,11 @@ def image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_s,
         dst = img
 
     # adjust the gamma level, so the yellow and white parts of the image stand out more
-    dst = adjust_gamma(dst, .3)
+    gam = adjust_gamma(dst, .3)
 
     # calculate the R channel
-    r = dst[:, :, 2]
-    g = dst[:, :, 1]
+    r = gam[:, :, 2]
+    g = gam[:, :, 1]
     # calculate R and G binary
     r_binary = np.zeros_like(r)
     g_binary = np.zeros_like(g)
@@ -53,19 +53,19 @@ def image_trafo(img, mtx, dist, thresh_r, thresh_g, thresh_s,
     # calculate the combined R and G binary, only true if R and G are in the limits
     rg_binary[(r_binary == 1) & (g_binary == 1)] = 1
     # calculate the binary of the S channel of the HLS color space
-    hls = cv2.cvtColor(dst, cv2.COLOR_BGR2HLS)
+    hls = cv2.cvtColor(gam, cv2.COLOR_BGR2HLS)
     s = hls[:, :, 2]
     s_binary = np.zeros_like(s)
     s_binary[(s >= thresh_s[0]) & (s <= thresh_s[1])] = 1
 
     # calculate the binary of the V channel of the HVS color space
-    hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(gam, cv2.COLOR_BGR2HSV)
     v = hsv[:, :, 2]
     v_binary = np.zeros_like(v)
     v_binary[(v >= 220) & (v <= 255)] = 1
 
     # calculate the color gradient in x direction
-    gray = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(gam, cv2.COLOR_BGR2GRAY)
     solx = cv2.Sobel(gray, cv2.CV_64F, 1, 0)  # calculate color gradient with Sobel function of opencv
     abs_solx = np.abs(solx)  # take the absolute
     norm_solx = np.uint8(255 * abs_solx / np.max(abs_solx))

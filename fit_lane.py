@@ -124,7 +124,7 @@ def similar_fit_line(img, llane, rlane):
 
     if 0.85 * llane.current_fit[0] <= left_fit[0] <= 1.15 * llane.current_fit[0] or\
         0.85 * llane.current_fit[1] <= left_fit[1] <= 1.15 * llane.current_fit[1] or \
-            0.95 * llane.current_fit[2] <= left_fit[2] <= 1.05 * llane.current_fit[2]:
+            0.9 * llane.current_fit[2] <= left_fit[2] <= 1.1 * llane.current_fit[2]:
         llane.detected = True
         llane.current_fit = left_fit
         llane.recent_xfitted = left_fitx
@@ -140,7 +140,7 @@ def similar_fit_line(img, llane, rlane):
 
     if 0.85 * rlane.current_fit[0] <= right_fit[0] <= 1.15 * rlane.current_fit[0] or \
         0.85 * rlane.current_fit[1] <= right_fit[1] <= 1.15 * rlane.current_fit[1] or \
-            0.95 * rlane.current_fit[2] <= right_fit[2] <= 1.05 * rlane.current_fit[2]:
+            0.9 * rlane.current_fit[2] <= right_fit[2] <= 1.1 * rlane.current_fit[2]:
         rlane.detected = True
         rlane.current_fit = right_fit
         rlane.recent_xfitted = right_fitx
@@ -183,8 +183,13 @@ def meas_curv(llane, rlane):
     llane.radius_of_curvature = left_curverad
     rlane.radius_of_curvature = right_curverad
 
+    img_center = 360*xm_per_pix
+    car_pos = img_center - (right_fit_cr[2]-left_fit_cr[2])/2
 
-def draw_lane(warped, undist, llane, rlane, M):
+    return car_pos
+
+
+def draw_lane(warped, undist, llane, rlane, M, car_pos):
     warp_zero = np.zeros_like(warped).astype(np.uint8)
     color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
     # Recast the x and y points into usable format for cv2.fillPoly()
@@ -208,6 +213,7 @@ def draw_lane(warped, undist, llane, rlane, M):
     font = cv2.FONT_HERSHEY_SIMPLEX
     strleft = 'Radius of left lane [m]: ' + str(llane.radius_of_curvature)
     strright = 'Radius of right lane [m]: ' + str(rlane.radius_of_curvature)
-    cv2.putText(result, strleft, (50, 100), font, 2, (255, 255, 255))
-    cv2.putText(result, strright, (50, 200), font, 2, (255, 255, 255))
+    cv2.putText(result, strleft, (50, 100), font, 1, (255, 255, 255))
+    cv2.putText(result, strright, (50, 200), font, 1, (255, 255, 255))
+    cv2.putText(result, 'Distance of car to center: ' + str(car_pos), (50, 300), font, 1, (255, 255, 255))
     return result

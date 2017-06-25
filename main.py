@@ -41,10 +41,10 @@ def img_pipeline(img):
         similar_fit_line(img, llane, rlane)
 
     # measure the curvature of the lanes
-    meas_curv(llane, rlane)
+    car_pos = meas_curv(llane, rlane)
 
     # draw the lines in the image and the value for the curvature
-    img = draw_lane(img, undist, llane, rlane, M)
+    img = draw_lane(img, undist, llane, rlane, M, car_pos)
     return img
 
 
