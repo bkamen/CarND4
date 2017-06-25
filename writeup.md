@@ -29,6 +29,9 @@ The goals / steps of this project are the following:
 [image9]: ./camera_cal/calibration4.jpg "Original 4"
 [image10]: ./camera_cal/calibration5.jpg "Original 5"
 
+[image11]: ./output_images/undistorted_straight_lines1.jpg "undistored"
+[image12]: ./test_images/straight_lines1.jpg "undistored"
+
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -54,25 +57,24 @@ The image points are the identified corners of the chessboards and are appended 
 To get the calibration coefficients the opencv function cv2.calibrateCamera is called ('camera_calibration.py', line 40) which calculates the coeffs based on the objpts and imgpts array.
 If defined by the user the coefficients will be saved as pickle file. Same goes for the logfile which is saved as textfile.
 
-![Original image][image6| width=100] ![undistorted image][image1=250x]
-
-![][image2]
-![][image3]
-![][image4]
-![][image5]
+![Original image][image6] {: height="36px" width="36px"} ![undistorted image][image1] {: height="36px" width="36px"}
+![Original image][image7] ![undistorted image][image2]
+![Original image][image8] ![undistorted image][image3]
+![Original image][image9] ![undistorted image][image4]
+![Original image][image10] ![undistorted image][image5]
 
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
 
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
+
+Original and undistored example:
+![][image12] ![][image11]
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
 
-![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
