@@ -168,7 +168,7 @@ def meas_curv(llane, rlane):
     y_eval = np.max(ploty)
 
     # Define conversions in x and y from pixels space to meters
-    ym_per_pix = 40 / 720  # meters per pixel in y dimension
+    ym_per_pix = 40 / 520  # meters per pixel in y dimension
     xm_per_pix = 4 / 1080  # meters per pixel in x dimension
 
     # Fit new polynomials to x,y in world space
