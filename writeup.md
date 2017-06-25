@@ -65,22 +65,29 @@ A combination of the used for the output image.
 Of the BGR color space the R and G channels are used. Lane lines always have R components as well as G components (usually white or yellow lines).
 To not run into the issue to also have a yellowish tarmac included an elementwise matrix multiplication of R and G channel is performed to only catch pixels that have both components ('image_transform.py', line 47-54).
 
-R and G binaries:
+R binaries:
 
-![R binary](./output_images/r_binary_straight_lines1.jpg)![R binary](./output_images/r_binary_straight_lines2.jpg)![R binary](./output_images/r_binary_test1.jpg)![R binary](./output_images/r_binary_test2.jpg)![R binary](r_binary_test3.jpg)![R binary](./output_images/r_binary_test4.jpg)![R binary](./output_images/r_binary_test5.jpg)![R binary](./output_images/r_binary_test6.jpg)
-![G binary](./output_images/g_binary_straight_lines1.jpg)![G binary](./output_images/g_binary_straight_lines2.jpg)![G binary](./output_images/g_binary_test1.jpg)![G binary](./output_images/g_binary_test2.jpg)![G binary](g_binary_test3.jpg)![G binary](./output_images/g_binary_test4.jpg)![G binary](./output_images/g_binary_test5.jpg)![G binary](./output_images/g_binary_test6.jpg)
+![R binary](./output_images/r_binary_straight_lines1.jpg)![R binary](./output_images/r_binary_straight_lines2.jpg)![R binary](./output_images/r_binary_test1.jpg)![R binary](./output_images/r_binary_test2.jpg)![R binary](./output_images/r_binary_test3.jpg)![R binary](./output_images/r_binary_test4.jpg)![R binary](./output_images/r_binary_test5.jpg)![R binary](./output_images/r_binary_test6.jpg)
+
+G binaries:
+
+![G binary](./output_images/g_binary_straight_lines1.jpg)![G binary](./output_images/g_binary_straight_lines2.jpg)![G binary](./output_images/g_binary_test1.jpg)![G binary](./output_images/g_binary_test2.jpg)![G binary](./output_images/g_binary_test3.jpg)![G binary](./output_images/g_binary_test4.jpg)![G binary](./output_images/g_binary_test5.jpg)![G binary](./output_images/g_binary_test6.jpg)
 
 Combined R and G binaries:
+
 ![RG binary](./output_images/rg_binary_straight_lines1.jpg)![RG binary](./output_images/rg_binary_straight_lines2.jpg)![RG binary](./output_images/rg_binary_test1.jpg)![RG binary](./output_images/rg_binary_test2.jpg)![RG binary](./output_images/rg_binary_test3.jpg)![RG binary](./output_images/rg_binary_test4.jpg)![RG binary](./output_images/rg_binary_test5.jpg)![RG binary](./output_images/rg_binary_test6.jpg)
 
 
 Of the HLS color space the S channel is used ('image_transform.py', line 55-59):
-![S binary](./output_images/s_binary_straight_lines1.jpg)![S binary](./output_images/s_binary_straight_lines2.jpg)![S binary](./output_images/s_binary_test1.jpg)![S binary](./output_images/s_binary_test2.jpg)![S binary](s_binary_test3.jpg)![S binary](./output_images/s_binary_test4.jpg)![S binary](./output_images/s_binary_test5.jpg)![S binary](./output_images/s_binary_test6.jpg)
+
+![S binary](./output_images/s_binary_straight_lines1.jpg)![S binary](./output_images/s_binary_straight_lines2.jpg)![S binary](./output_images/s_binary_test1.jpg)![S binary](./output_images/s_binary_test2.jpg)![S binary](./output_images/s_binary_test3.jpg)![S binary](./output_images/s_binary_test4.jpg)![S binary](./output_images/s_binary_test5.jpg)![S binary](./output_images/s_binary_test6.jpg)
 
 Of the HSV color space the V channel is used ('image_transform.py', line 61-65):
-![V binary](./output_images/v_binary_straight_lines1.jpg)![V binary](./output_images/v_binary_straight_lines2.jpg)![V binary](./output_images/v_binary_test1.jpg)![V binary](./output_images/v_binary_test2.jpg)![V binary](v_binary_test3.jpg)![V binary](./output_images/v_binary_test4.jpg)![V binary](./output_images/v_binary_test5.jpg)![V binary](./output_images/v_binary_test6.jpg)
+
+![V binary](./output_images/v_binary_straight_lines1.jpg)![V binary](./output_images/v_binary_straight_lines2.jpg)![V binary](./output_images/v_binary_test1.jpg)![V binary](./output_images/v_binary_test2.jpg)![V binary](./output_images/v_binary_test3.jpg)![V binary](./output_images/v_binary_test4.jpg)![V binary](./output_images/v_binary_test5.jpg)![V binary](./output_images/v_binary_test6.jpg)
 
 And last but not least a binary of the sobel gradient in the x-direction of a grayscale image is used ('image_transform.py', line 67-74):
+
 ![Sobelx binary](./output_images/solx_binary_straight_lines1.jpg)![Sobelx binary](./output_images/solx_binary_straight_lines2.jpg)![Sobelx binary](./output_images/solx_binary_test1.jpg)![Sobelx binary](./output_images/solx_binary_test2.jpg)![Sobelx binary](./output_images/solx_binary_test3.jpg)![Sobelx binary](./output_images/solx_binary_test4.jpg)![Sobelx binary](./output_images/solx_binary_test5.jpg)![Sobelx binary](./output_images/solx_binary_test6.jpg)
 
 
@@ -88,31 +95,20 @@ And last but not least a binary of the sobel gradient in the x-direction of a gr
 
 The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
 
+The perspective transformation is done if defined by the user when the function 'image_trafo' is called ('image_transformation.py', line 80-85). If that is the case the function 'persp_transform' is called ('image_transformation.py', line 90-98).
+Under the assumption that the camera position is constant the following source and destination points are hardcoded:
+ 
+
 ```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+dst = np.float32([(475+offset, 100), (200+offset, imshape[1]-100), (imshape[0]-475+offset, 100), (imshape[0]-200+offset, imshape[1]-100)])
+src = np.float32([(605, 470), (180, imshape[1]), (imshape[0] - 605, 470), (imshape[0] - 180, imshape[1])])
 ```
 
-This resulted in the following source and destination points:
+An offset is implemented to consider a lateral camera offset.
 
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+The image and perspective transformed output looks like this:
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
-
-![alt text][image4]
+![](./output_images/transformed_straight_lines1.jpg)
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
